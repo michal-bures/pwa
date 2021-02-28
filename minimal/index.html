@@ -20,44 +20,84 @@
 <div class="bubble-button" id="minus-button">-</div>
 <div class="bubble-button" id="refresh-button">&#8635;</div>
 <div class="status-text">
-    <div class="revision">v8</div>
+    <div id="version"></div>
     <div id="network-status">online</div>
 </div>
 
 <!-- Scripts -->
 <script type="text/javascript">
-    const COUNTER_URL = 'https://api.countapi.xyz/get/mbures-pwa/counter'
 
-    if (navigator.serviceWorker != null) {
+    const URLS={
+        getCounter: 'https://api.countapi.xyz/get/mbures-pwa/counter',
+        updateCounter: delta => `https://api.countapi.xyz/update/mbures-pwa/counter?amount=${delta}`
+    }
+    let serviceWorkerVersion = '?'
+
+    const elements = {
+        networkStatus: document.querySelector('#network-status'),
+        counter: document.querySelector('#counter'),
+        version: document.querySelector('#version'),
+        plusButton: document.querySelector('#plus-button'),
+        minusButton: document.querySelector('#minus-button'),
+        refreshButton: document.querySelector('#refresh-button')
+    }
+
+    elements.plusButton.onclick = () => modifyCount(1)
+    elements.minusButton.onclick = () => modifyCount(-1)
+    elements.refreshButton.onclick = fetchCount
+
+    if (navigator.serviceWorker) {
+        // register the worker
         navigator.serviceWorker.register('sw.js')
             .then(function (registration) {
                 console.log('Registered events at scope: ', registration.scope);
             });
-    }
 
-    fetch(COUNTER_URL)
-        .then(response => response.json())
-        .then(body => {
-            const counterEl = document.querySelector('#counter')
-            counterEl.innerText = body.value
+        // display current service worker version
+        navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data.serviceWorkerVersion) {
+                serviceWorkerVersion = event.data.serviceWorkerVersion
+                updateVersion()
+            }
+        });
+        navigator.serviceWorker.ready.then(registration => {
+            registration.active.postMessage('version')
         })
 
-    const statusEl = document.querySelector('#network-status')
+    }
 
     window.addEventListener('load', function() {
+        fetchCount()
+        updateVersion()
+        updateOnlineStatus()
         window.addEventListener('online',  updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
     });
 
-    function updateOnlineStatus(event) {
+    function updateOnlineStatus() {
         if (!navigator.onLine) {
             document.body.classList = ['offline']
-            statusEl.innerText = 'offline'
+            elements.networkStatus.innerText = 'offline'
         } else {
             document.body.classList = ['online']
-            statusEl.innerText = 'online'
+            elements.networkStatus.innerText = 'online'
         }
     }
 
+    async function fetchCount() {
+        const res = await fetch(URLS.getCounter)
+        const body = await res.json()
+        elements.counter.innerText = body.value
+    }
+
+    async function modifyCount(delta) {
+        const res = await fetch(URLS.updateCounter(delta))
+        const body = await res.json()
+        elements.counter.innerHTML = body.value
+    }
+
+    function updateVersion() {
+        elements.version.innerText = `v${serviceWorkerVersion}`
+    }
 </script>
 </body>

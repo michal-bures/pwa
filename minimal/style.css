@@ -27,7 +27,8 @@ body {
     left: calc(50% - 33vmin);
     width: 66vmin;
     height: 66vmin;
-    border: 3px solid #ddd;
+    color: #ddd;
+    border: 3px solid #ccc;
     border-radius: 50vmin;
     white-space: nowrap;
 
@@ -73,6 +74,7 @@ body {
     white-space: nowrap;
     transform:translate(-50%, -50%);
     background-color: #6687A3;
+    user-select: none
 }
 
 .bubble-button:hover {

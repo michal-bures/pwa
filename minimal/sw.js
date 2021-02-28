@@ -1,5 +1,6 @@
 console.log('Script loaded!')
-const cacheStorageKey = 'minimal-pwa-8'
+
+const VERSION = 5
 
 const COUNTER_URL = 'https://api.countapi.xyz'
 const COUNTER_GET_URL = `${COUNTER_URL}/get`
@@ -8,6 +9,8 @@ const COUNTER_UPDATE_URL = `${COUNTER_URL}/update`
 const LSKEY_COUNTER = 'counter-value'
 const LSKEY_DELTA = 'counter-delta'
 
+const CACHE_STORAGE_KEY = `pwa-counter-v${VERSION}`
+
 const cacheList = [
     "index.html",
     "style.css",
@@ -15,34 +18,21 @@ const cacheList = [
 
 self.addEventListener('install', function(e) {
     console.log('install event')
-    e.waitUntil(
-        caches.open(cacheStorageKey).then(function(cache) {
-            console.log('Adding to Cache:', cacheList)
-            return cache.addAll(cacheList)
-        }).then(function() {
-            console.log('Skip waiting!')
-            return self.skipWaiting()
-        })
-    )
+    e.waitUntil(install())
 })
 
 self.addEventListener('activate', function(e) {
     console.log('activate event')
-    e.waitUntil(
-        caches.keys().then(cacheNames => {
-            return cacheNames.map(name => {
-                if (name !== cacheStorageKey) {
-                    return caches.delete(name)
-                }
-            })
-        }).then(() => {
-            console.log('Clients claims.')
-            return self.clients.claim()
-        })
-    )
+    e.waitUntil(activate())
 })
 
-self.addEventListener('fetch', async function(e) {
+self.addEventListener('message', (event) => {
+    if (event.data === 'version') {
+        event.source.postMessage({serviceWorkerVersion: VERSION})
+    }
+})
+
+self.addEventListener('fetch', function(e) {
     const req = e.request
     console.log('Fetch event:', req.url)
 
@@ -54,7 +44,7 @@ self.addEventListener('fetch', async function(e) {
         }
     } else {
         e.respondWith(
-            caches.match(e.request).then(function(response) {
+            caches.match(e.request).then((response) => {
                 if (response != null) {
                     console.log('Using cache for:', e.request.url)
                     return response
@@ -65,6 +55,28 @@ self.addEventListener('fetch', async function(e) {
         )
     }
 })
+
+async function install() {
+    const cache = await caches.open(CACHE_STORAGE_KEY)
+    console.log('Adding to Cache:', cacheList)
+    await cache.addAll(cacheList)
+    await self.skipWaiting()
+}
+
+
+async function activate() {
+    const cacheNames = await caches.keys()
+    await Promise.all(cacheNames.map(name => {
+        if (name !== CACHE_STORAGE_KEY) {
+            return caches.delete(name)
+        }
+    }))
+    await self.clients.claim()
+    const clients = await self.clients.matchAll()
+    for (const client of clients) {
+        client.postMessage({serviceWorkerVersion: VERSION})
+    }
+}
 
 function handleCounterRequestWhileOffline(request) {
     if (request.url.startsWith(COUNTER_GET_URL)) {
