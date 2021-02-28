@@ -1,0 +1,93 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Helvetica Neue', Helvetica, Arial, 'RobotoRegular', 'Droid Sans',  'Segoe UI', Segoe, Tahoma, Geneva, sans-serif;
+    font-weight: 200;
+    font-size: 20px;
+    background-color: #457b9d;
+    background-image: radial-gradient(
+          ellipse farthest-corner at 45px 45px,
+          hsla(0,80%,100%,0.32) 0%,
+          hsla(0,80%,80%,0.16) 60%,
+          hsla(0,80%,80%,0) 95%
+    );
+    transition: background-color 1s;
+    color: #ccc;
+}
+
+.offline {
+    background-color: #5c5c5c
+}
+
+#counter {
+    position: fixed;
+    top: calc(50% - 33vmin);
+    left: calc(50% - 33vmin);
+    width: 66vmin;
+    height: 66vmin;
+    border: 3px solid #ddd;
+    border-radius: 50vmin;
+    white-space: nowrap;
+
+    text-align: center;
+    vertical-align: middle;
+    line-height: 66vmin;
+    font-size: 33vmin;
+}
+
+#plus-button {
+    position: fixed;
+    top: calc(50% - 10vmin);
+    left: calc(50% + 32vmin);
+}
+
+#minus-button {
+    position: fixed;
+    top: calc(50% + 10vmin);
+    left: calc(50% + 32vmin);
+}
+
+#refresh-button {
+    position: fixed;
+    top: calc(50% + 27vmin);
+    left: calc(50% + 20vmin);
+    width: 10vmin;
+    height: 10vmin;
+    font-size: 6vmin;
+    line-height: 10.5vmin;
+}
+
+
+.bubble-button {
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    width: 12vmin;
+    height: 12vmin;
+    line-height: 12vmin;
+    font-size: 10vmin;
+    border: 3px solid #ccc;
+    border-radius: 50vmin;
+    white-space: nowrap;
+    transform:translate(-50%, -50%);
+    background-color: #6687A3;
+}
+
+.bubble-button:hover {
+    transform: translate(-50%, -50%) scale(1.04);
+}
+
+img {
+    width: auto;
+    max-width: 80%;
+}
+
+.status-text {
+    font-weight: 200;
+    text-align: right;
+    position: fixed;
+    bottom: 32px;
+    right: 32px
+}

@@ -1,0 +1,63 @@
+<head>
+    <title>Minimal PWA</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <link rel="manifest" href="manifest.json"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#8dd3fd">
+    <meta name="theme-color" content="#8dd3fd">
+</head>
+
+<body>
+
+<!-- Page Content -->
+<div class="main-text" id="counter">?</div>
+<div class="bubble-button" id="plus-button">+</div>
+<div class="bubble-button" id="minus-button">-</div>
+<div class="bubble-button" id="refresh-button">&#8635;</div>
+<div class="status-text">
+    <div class="revision">v8</div>
+    <div id="network-status">online</div>
+</div>
+
+<!-- Scripts -->
+<script type="text/javascript">
+    const COUNTER_URL = 'https://api.countapi.xyz/get/mbures-pwa/counter'
+
+    if (navigator.serviceWorker != null) {
+        navigator.serviceWorker.register('sw.js')
+            .then(function (registration) {
+                console.log('Registered events at scope: ', registration.scope);
+            });
+    }
+
+    fetch(COUNTER_URL)
+        .then(response => response.json())
+        .then(body => {
+            const counterEl = document.querySelector('#counter')
+            counterEl.innerText = body.value
+        })
+
+    const statusEl = document.querySelector('#network-status')
+
+    window.addEventListener('load', function() {
+        window.addEventListener('online',  updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+    });
+
+    function updateOnlineStatus(event) {
+        if (!navigator.onLine) {
+            document.body.classList = ['offline']
+            statusEl.innerText = 'offline'
+        } else {
+            document.body.classList = ['online']
+            statusEl.innerText = 'online'
+        }
+    }
+
+</script>
+</body>
