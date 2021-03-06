@@ -16,7 +16,7 @@
 
 <!-- Page Content -->
 <div class="main-text" id="counter">?</div>
-<div class="sub-text" id="local-delta">(+1)</div>
+<div class="sub-text" id="local-delta"></div>
 
 <div class="bubble-button" id="plus-button">+</div>
 <div class="bubble-button" id="minus-button">-</div>
@@ -27,7 +27,7 @@
 </div>
 
 <!-- Scripts -->
-<script type="text/javascript">
+<script defer type="text/javascript">
 
     const urls = {
         getCounter: 'https://api.countapi.xyz/get/pwa-demo/counter',
@@ -48,6 +48,9 @@
     }
     let serviceWorkerVersion = '?'
 
+    // counter adjustment currently on the way to the server
+    let inflightDelta = 0
+
     elements.plusButton.onclick = () => adjustCount(1)
     elements.minusButton.onclick = () => adjustCount(-1)
     elements.refreshButton.onclick = fetchCount
@@ -55,9 +58,6 @@
     if (navigator.serviceWorker) {
         // register the worker
         navigator.serviceWorker.register('sw.js')
-            .then(function (registration) {
-                console.log('Registered events at scope: ', registration.scope);
-            });
 
         // display current service worker version
         navigator.serviceWorker.addEventListener('message', event => {
@@ -71,15 +71,18 @@
         })
     }
 
-    window.addEventListener('load', function() {
-        fetchCount()
-        updateVersion()
-        handleConnectivityChange()
-        window.addEventListener('online',  handleConnectivityChange);
-        window.addEventListener('offline', handleConnectivityChange);
-    });
+    renderCurrentCount()
+    fetchCount()
+    updateVersion()
+    handleConnectivityChange()
+    window.addEventListener('online',  handleConnectivityChange);
+    window.addEventListener('offline', handleConnectivityChange);
+
+    // check for update from server once in a while
+    setInterval(() => {if (!inflightDelta) fetchCount()}, 10000)
 
     function handleConnectivityChange() {
+        console.log('Connectivity change:', navigator.onLine ? 'online' : 'offline')
         if (navigator.onLine) {
             document.body.classList = ['online']
             elements.networkStatus.innerText = 'online'
@@ -97,31 +100,42 @@
     }
 
     async function adjustCount(delta = 0) {
-        const newLocalDelta = getLocalDelta() + delta
+        const deltaToApply = getLocalDelta() + delta
+        setLocalDelta(deltaToApply)
+        setCounterValue(getCounterValue() + delta)
+        if (inflightDelta) return // special case: request already in flight
+        if (!deltaToApply) return // special case: nothing to apply
         try {
-            const res = await fetch(urls.updateCounter(newLocalDelta))
+            console.log('Sending request to adjust counter by', deltaToApply)
+            inflightDelta = deltaToApply
+            const res = await fetch(urls.updateCounter(deltaToApply))
             const body = await res.json()
-            setCounterValue(body.value)
-            setLocalDelta(0)
+            console.log('Counter adjustment by ', inflightDelta, 'confirmed by server, server value now',body.value)
+            setLocalDelta(getLocalDelta() - inflightDelta)
+            setCounterValue(body.value + getLocalDelta())
+            inflightDelta = 0
+            if (getLocalDelta()!==0) await adjustCount()
         } catch (err) {
-            setCounterValue(getCounterValue() + delta)
-            setLocalDelta(newLocalDelta)
+            inflightDelta = 0
+            console.log('Failed to update count on server')
         }
     }
 
     function setCounterValue(newValue) {
         localStorage?.setItem(storageKeys.counterValue, newValue)
         elements.counter.innerHTML = newValue
+        renderCurrentCount()
     }
 
     function setLocalDelta(newValue) {
-        if (!newValue) {
-            elements.localDelta.innerHTML = ''
-            localStorage?.removeItem(storageKeys.localDelta)
-        } else {
-            localStorage?.setItem(storageKeys.localDelta, newValue)
-            elements.localDelta.innerHTML = withSign(newValue.toFixed(0))
-        }
+        localStorage?.setItem(storageKeys.localDelta, newValue || '0')
+        renderCurrentCount()
+    }
+
+    function renderCurrentCount() {
+        const delta = getLocalDelta()
+        elements.localDelta.innerHTML = delta ? `(${withSign(delta)})` : ''
+        elements.counter.innerHTML = getCounterValue()
     }
 
     function updateVersion() {

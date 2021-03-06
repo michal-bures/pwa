@@ -1,6 +1,6 @@
 console.log('Script loaded!')
 
-const VERSION = 5
+const VERSION = 14
 const CACHE_STORAGE_KEY = `pwa-counter-v${VERSION}`
 
 // list of resources that will be cached client-side and served from the cache instead of server
@@ -33,10 +33,9 @@ async function cacheFirst(request) {
     //cache-first
     const cachedResponse = await caches.match(request)
     if (cachedResponse != null) {
-        console.log('Using cache for:', request.url)
+        console.log(request.url, ' fetched from cache')
         return cachedResponse
     } else {
-        console.log('Fallback to fetch:', request.url)
         return fetch(request)
     }
 }
