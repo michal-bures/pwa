@@ -16,6 +16,8 @@
 
 <!-- Page Content -->
 <div class="main-text" id="counter">?</div>
+<div class="sub-text" id="local-delta">(+1)</div>
+
 <div class="bubble-button" id="plus-button">+</div>
 <div class="bubble-button" id="minus-button">-</div>
 <div class="bubble-button" id="refresh-button">&#8635;</div>
@@ -27,23 +29,27 @@
 <!-- Scripts -->
 <script type="text/javascript">
 
-    const URLS={
-        getCounter: 'https://api.countapi.xyz/get/mbures-pwa/counter',
-        updateCounter: delta => `https://api.countapi.xyz/update/mbures-pwa/counter?amount=${delta}`
+    const urls = {
+        getCounter: 'https://api.countapi.xyz/get/pwa-demo/counter',
+        updateCounter: delta => `https://api.countapi.xyz/update/pwa-demo/counter?amount=${delta}`
     }
-    let serviceWorkerVersion = '?'
-
+    const storageKeys = {
+        counterValue: 'counter-value',
+        localDelta: 'local-delta'
+    }
     const elements = {
         networkStatus: document.querySelector('#network-status'),
         counter: document.querySelector('#counter'),
         version: document.querySelector('#version'),
         plusButton: document.querySelector('#plus-button'),
         minusButton: document.querySelector('#minus-button'),
-        refreshButton: document.querySelector('#refresh-button')
+        refreshButton: document.querySelector('#refresh-button'),
+        localDelta: document.querySelector('#local-delta')
     }
+    let serviceWorkerVersion = '?'
 
-    elements.plusButton.onclick = () => modifyCount(1)
-    elements.minusButton.onclick = () => modifyCount(-1)
+    elements.plusButton.onclick = () => adjustCount(1)
+    elements.minusButton.onclick = () => adjustCount(-1)
     elements.refreshButton.onclick = fetchCount
 
     if (navigator.serviceWorker) {
@@ -63,41 +69,79 @@
         navigator.serviceWorker.ready.then(registration => {
             registration.active.postMessage('version')
         })
-
     }
 
     window.addEventListener('load', function() {
         fetchCount()
         updateVersion()
-        updateOnlineStatus()
-        window.addEventListener('online',  updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
+        handleConnectivityChange()
+        window.addEventListener('online',  handleConnectivityChange);
+        window.addEventListener('offline', handleConnectivityChange);
     });
 
-    function updateOnlineStatus() {
-        if (!navigator.onLine) {
-            document.body.classList = ['offline']
-            elements.networkStatus.innerText = 'offline'
-        } else {
+    function handleConnectivityChange() {
+        if (navigator.onLine) {
             document.body.classList = ['online']
             elements.networkStatus.innerText = 'online'
+            if (getLocalDelta()) adjustCount()
+        } else {
+            document.body.classList = ['offline']
+            elements.networkStatus.innerText = 'offline'
         }
     }
 
     async function fetchCount() {
-        const res = await fetch(URLS.getCounter)
+        const res = await fetch(urls.getCounter)
         const body = await res.json()
-        elements.counter.innerText = body.value
+        setCounterValue(body.value)
     }
 
-    async function modifyCount(delta) {
-        const res = await fetch(URLS.updateCounter(delta))
-        const body = await res.json()
-        elements.counter.innerHTML = body.value
+    async function adjustCount(delta = 0) {
+        const newLocalDelta = getLocalDelta() + delta
+        try {
+            const res = await fetch(urls.updateCounter(newLocalDelta))
+            const body = await res.json()
+            setCounterValue(body.value)
+            setLocalDelta(0)
+        } catch (err) {
+            setCounterValue(getCounterValue() + delta)
+            setLocalDelta(newLocalDelta)
+        }
+    }
+
+    function setCounterValue(newValue) {
+        localStorage?.setItem(storageKeys.counterValue, newValue)
+        elements.counter.innerHTML = newValue
+    }
+
+    function setLocalDelta(newValue) {
+        if (!newValue) {
+            elements.localDelta.innerHTML = ''
+            localStorage?.removeItem(storageKeys.localDelta)
+        } else {
+            localStorage?.setItem(storageKeys.localDelta, newValue)
+            elements.localDelta.innerHTML = withSign(newValue.toFixed(0))
+        }
     }
 
     function updateVersion() {
         elements.version.innerText = `v${serviceWorkerVersion}`
     }
+
+    function getLocalDelta() {
+        const storedDelta = Number(localStorage?.getItem(storageKeys.localDelta))
+        return isNaN(storedDelta) ? 0 : storedDelta
+    }
+
+    function getCounterValue() {
+        const storedValue = Number(localStorage?.getItem(storageKeys.counterValue))
+        return isNaN(storedValue) ? 0 : storedValue
+    }
+
+    function withSign(n) {
+        return (n<0?"":"+") + n
+    }
+
+
 </script>
 </body>

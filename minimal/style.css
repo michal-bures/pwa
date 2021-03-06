@@ -38,6 +38,21 @@ body {
     font-size: 33vmin;
 }
 
+#local-delta {
+    position: fixed;
+    top: calc(50% + 15vmin);
+    left: 50%;
+    color: #ddd;
+    white-space: nowrap;
+    transform:translate(-50%);
+
+    text-align: center;
+    vertical-align: middle;
+    line-height: 15vmin;
+    font-size: 5vmin;
+}
+
+
 #plus-button {
     position: fixed;
     top: calc(50% - 10vmin);
