@@ -5,6 +5,7 @@ const CACHE_STORAGE_KEY = `pwa-counter-v${VERSION}`
 
 // list of resources that will be cached client-side and served from the cache instead of server
 const cacheFirstList = [
+    "/",
     "index.html",
     "style.css",
 ]
