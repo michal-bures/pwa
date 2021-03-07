@@ -1,17 +1,21 @@
-body {
+html {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+}
+
+body {
     font-family: 'Helvetica Neue', Helvetica, Arial, 'RobotoRegular', 'Droid Sans',  'Segoe UI', Segoe, Tahoma, Geneva, sans-serif;
     font-weight: 200;
     font-size: 20px;
     background-color: #457b9d;
     background-image: radial-gradient(
-          ellipse farthest-corner at 45px 45px,
-          hsla(0,80%,100%,0.32) 0%,
-          hsla(0,80%,80%,0.16) 60%,
-          hsla(0,80%,80%,0) 95%
+            ellipse farthest-corner at 45px 45px,
+            hsla(0,80%,100%,0.32) 0%,
+            hsla(0,80%,80%,0.16) 60%,
+            hsla(0,80%,80%,0) 95%
     );
     transition: background-color 1s;
     color: #ccc;

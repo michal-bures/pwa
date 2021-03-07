@@ -1,6 +1,7 @@
 {
     "name": "Counter",
     "short_name": "Counter",
+    "start_url": "/",
     "icons": [
         {
             "src": "/icons/android-chrome-192x192.png",
