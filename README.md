@@ -22,10 +22,15 @@ Here are some interesting behaviors to explore with the `/minimal` example app.
 
 Run the example locally by serving the `/minimal` directory with your favourite web server
 
+### Inspect the app in chrome dev tools
+
+* Inspect live how the app works with local storage and cache (Application tab)
+* Inspect the application manifest (Application tab)
+* Observe the lifecycle of the service worker (Application tab)
+* Check that the app passes all PWA checks using Lighthouse (Lighthouse tab)
 
 ### Verifying PWA compliance
 
-* Open chrome dev tools and check that the app is PWA using Lighthouse
 
 ### The tricky thing about updating your pwa (without workbox)
 
