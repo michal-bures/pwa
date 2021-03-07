@@ -2,6 +2,8 @@
 
 ![preview](./doc/screenshot.png)
 
+## Try it live at [pwa-counter.netlify.app](https://pwa-counter.netlify.app)
+
 A simple showcase of a progressive web app. It shows a shared global counter that works correctly even with bad connection or when completely offline.
 
 Whenever connectivity is restored, the counter value is automatically updated in the background.
@@ -14,8 +16,6 @@ There are two versions of the app in this repository:
 
  * *Modern version* in `/modern` is an implementation, that takes full advantage of existing tools and libraries.
 
-## Service workers
-
 ## Exercises
 
 Here are some interesting behaviors to explore with the `/minimal` example app.
@@ -27,10 +27,7 @@ Run the example locally by serving the `/minimal` directory with your favourite 
 * Inspect live how the app works with local storage and cache (Application tab)
 * Inspect the application manifest (Application tab)
 * Observe the lifecycle of the service worker (Application tab)
-* Check that the app passes all PWA checks using Lighthouse (Lighthouse tab)
-
-### Verifying PWA compliance
-
+* Check that the app passes all PWA compliance checks using Lighthouse (Lighthouse tab)
 
 ### The tricky thing about updating your pwa (without workbox)
 
