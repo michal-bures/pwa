@@ -6,7 +6,7 @@
 
 A simple showcase of a progressive web app. It shows a shared global counter that works correctly even with bad connection or when completely offline.
 
-Whenever connectivity is restored, the counter value is automatically updated in the background.
+Whenever connectivity is restored, the counter value is automatically synced to the server in the background.
 
 There are two versions of the app in this repository:
  * *DYI version* in `/minimal` is a "pure" implementation with no external dependencies. No Webpack, no Npm, no Workbox, just html5 and plain javascript. 

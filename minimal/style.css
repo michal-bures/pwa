@@ -79,6 +79,14 @@ body {
     line-height: 10.5vmin;
 }
 
+#github-icon {
+    position: fixed;
+    color: white;
+    width: 24px;
+    height: 24px;
+    left: 32px;
+    bottom: 32px;
+}
 
 .bubble-button {
     cursor: pointer;
