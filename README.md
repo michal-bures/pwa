@@ -2,7 +2,7 @@
 
 ![preview](./doc/screenshot.png)
 
-## Try it live at [pwa-counter.netlify.app](https://pwa-counter.netlify.app)
+## Try it live at [counter-pwa.netlify.app](https://counter-pwa.netlify.app)
 
 A simple showcase of a progressive web app. It shows a shared global counter that works correctly even with bad connection or when completely offline.
 
@@ -20,7 +20,7 @@ There are two versions of the app in this repository:
 
 Here are some interesting behaviors to explore with the `/minimal` example app.
 
-Run the example locally by serving the `/minimal` directory with your favourite web server
+For some of these you need to runt the app locally - just serve the `/minimal` directory with your favourite web server
 
 ### Inspect the app in chrome dev tools
 
@@ -29,7 +29,7 @@ Run the example locally by serving the `/minimal` directory with your favourite 
 * Observe the lifecycle of the service worker (Application tab)
 * Check that the app passes all PWA compliance checks using Lighthouse (Lighthouse tab)
 
-### The tricky thing about updating your pwa (without workbox)
+### The tricky thing about updating your PWA (without workbox)
 
 * change the background color in style.css and reload page
    * nothing happens because the service worker is using the cached version of style.css
@@ -39,11 +39,12 @@ Run the example locally by serving the `/minimal` directory with your favourite 
     * but the background color still remains unchanged because the style.css was already loaded from cache by the old service worker
 * reload the app once more, now the background change will finally take effect, as the new service worker no longer uses the old cached version
 
-### Service worker operates across tabs 
+### How to make the counter even more robust 
 
-* The client assumes that if the request failed, the counter was not updated on the server, but that may not be true
-    * it's variant of the two generals problem - solvable using nonces
+* The client assumes that if the request failed, the counter was not updated on the server, but that may not hold true (request might have reached the server, but the response didn't arrive to the client)
+    * it's a variant of the two generals problem - solve using nonces
 
+## Credits
 
-### Limitations
- no access to local storage and DOM
+* [Netlify](https://netlify.com) - ridiculously easy way to turn your git repo into website, including auto deploy on push.
+* [countapi.xyz](https://countapi.xyz) - "Integer as a Service", awesome free counter API that is used as the backend for this app.

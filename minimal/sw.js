@@ -1,7 +1,7 @@
 console.log('Script loaded!')
 
 const VERSION = 15
-const CACHE_STORAGE_KEY = `pwa-counter-v${VERSION}`
+const CACHE_STORAGE_KEY = `counter-pwa-v${VERSION}`
 
 // list of resources that will be cached client-side and served from the cache instead of server
 const cacheFirstList = [
