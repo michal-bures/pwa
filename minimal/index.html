@@ -37,7 +37,7 @@
 <!-- Scripts -->
 <script defer type="text/javascript">
     const urls = {
-        getCounter: 'https://api.countapi.xyz/get/pwa-demo/counter',
+        fetchCounterValue: 'https://api.countapi.xyz/get/pwa-demo/counter',
         updateCounter: delta => `https://api.countapi.xyz/update/pwa-demo/counter?amount=${delta}`
     }
     const storageKeys = {
@@ -100,7 +100,7 @@
     }
 
     async function fetchCount() {
-        const res = await fetch(urls.getCounter)
+        const res = await fetch(urls.fetchCounterValue)
         const body = await res.json()
         setCounterValue(body.value)
     }

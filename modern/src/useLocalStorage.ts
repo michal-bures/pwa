@@ -1,18 +1,15 @@
 import {useState} from 'react'
 
-export function useNumberInLocalStorage(key: string, defaultValue: number) {
-    const [getStr, setStr] = useLocalStorage(key, defaultValue.toString())
+export function useNumberInLocalStorage(key: string, defaultValue: number): [number, (newValue: number) => void] {
+    const [currentValue, setCurrentValue] = useLocalStorage(key, defaultValue.toString())
 
-    const getter = () => {
-        const val = Number(getStr())
-        return isNaN(val) ? defaultValue : val
-    }
-
+    let valueAsNumber = Number(currentValue)
+    if (isNaN(valueAsNumber)) valueAsNumber = defaultValue
     const setter = (newValue: number) => {
-        setStr(newValue.toString())
+        setCurrentValue(newValue.toString())
     }
 
-    return [ getter, setter ]
+    return [ valueAsNumber, setter ]
 }
 
 export function useLocalStorage(key: string, defaultValue: string) {

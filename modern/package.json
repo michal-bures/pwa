@@ -5,9 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "clean-dist": "rimraf dist/*",
-    "build": "npm run clean-dist && webpack --config=webpack.config.js",
-    "serve": "npx serve dist",
-    "dev": ""
+    "build": "npm run clean-dist && webpack --config=webpack.config.js --mode production",
+    "start": "npx serve dist",
+    "dev": "webpack serve --mode development"
   },
   "repository": {
     "type": "git",

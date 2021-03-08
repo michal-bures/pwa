@@ -1,23 +1,32 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {GithubIcon} from './GithubIcon';
-import {useNumberInLocalStorage} from './useLocalStorage';
+import {useServiceWorkerVersion} from './hooks/useServiceWorkerVersion';
+import {useNetworkStatus} from './hooks/useNetworkStatus';
+import {useCounterService} from './hooks/useCounterService';
+
 
 export const App = () => {
 
-    const [counterValue, setCounterValue] = useCounterValue()
-    const [localDelta, setLocalDelta] = useLocalDelta()
+    const {
+        localDelta,
+        counterValue,
+        adjustCount,
+        refreshCountFromServer
+    } = useCounterService()
+    const swVersion = useServiceWorkerVersion()
+    const networkStatus = useNetworkStatus()
 
     return (
         <>
-            <div className="main-text" id="counter">?</div>
-            <div className="sub-text" id="local-delta"></div>
+            <div id="counter">{counterValue}</div>
+            <div id="local-delta">{formatDelta(localDelta)}</div>
 
-            <div className="bubble-button" id="plus-button">+</div>
-            <div className="bubble-button" id="minus-button">-</div>
-            <div className="bubble-button" id="refresh-button">&#8635;</div>
+            <div className="bubble-button" id="plus-button" onClick={() => adjustCount(+1)}>+</div>
+            <div className="bubble-button" id="minus-button" onClick={() => adjustCount(-1)}>-</div>
+            <div className="bubble-button" id="refresh-button" onClick={refreshCountFromServer}>&#8635;</div>
             <div className="status-text">
-                <div id="version"></div>
-                <div id="network-status">online</div>
+                <div id="version">{swVersion}</div>
+                <div id="network-status">{networkStatus}</div>
             </div>
 
             <GithubIcon url={'https://github.com/michal-bures/pwa'}/>
@@ -25,11 +34,12 @@ export const App = () => {
     )
 }
 
-
-export function useCounterValue() {
-    return useNumberInLocalStorage('counter-value', 0)
-}
-
-export function useLocalDelta() {
-    return useNumberInLocalStorage('local-delta', 0)
+function formatDelta(delta: number) {
+    if (delta > 0) {
+        return `(+${delta})`
+    } else if (delta < 0) {
+        return `(${delta})`
+    } else {
+        return ''
+    }
 }

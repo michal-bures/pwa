@@ -3,7 +3,6 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  mode: "production",
   resolve: {
     modules: [path.join(__dirname, 'src'), 'node_modules'],
     alias: {
@@ -41,6 +40,12 @@ module.exports = {
       ]
     })
   ],
+  devServer: {
+    contentBase: path.join(__dirname, 'static'),
+    compress: true,
+    port: 5687,
+    hot: true
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
