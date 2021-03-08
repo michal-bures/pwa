@@ -4,7 +4,8 @@
 
 ## Try it live at [counter-pwa.netlify.app](https://counter-pwa.netlify.app)
 
-A simple showcase of a progressive web app. It shows a shared global counter that works correctly even with bad connection or when completely offline.
+A simple showcase of a progressive web app. It shows a shared global counter that is installable as an app and
+works correctly even with bad connection or when completely offline.
 
 Whenever connectivity is restored, the counter value is automatically synced to the server in the background.
 
@@ -20,7 +21,7 @@ There are two versions of the app in this repository:
 
 Here are some interesting behaviors to explore with the `/minimal` example app.
 
-For some of these you need to runt the app locally - just serve the `/minimal` directory with your favourite web server
+For some of these you need to runt the app locally - just run `npx serve .` in the serve the `/minimal` directory, or use your favourite web server.
 
 ### Inspect the app in chrome dev tools
 

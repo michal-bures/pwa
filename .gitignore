@@ -1,1 +1,3 @@
 .idea
+modern/dist
+**/node_modules
