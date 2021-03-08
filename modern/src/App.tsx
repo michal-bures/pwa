@@ -3,6 +3,7 @@ import {GithubIcon} from './GithubIcon';
 import {useServiceWorkerVersion} from './hooks/useServiceWorkerVersion';
 import {useCounterService} from './hooks/useCounterService';
 import {useNetworkState} from './hooks/useNetworkState';
+import classNames from 'classnames';
 
 export const App = () => {
 
@@ -16,7 +17,10 @@ export const App = () => {
     const isOnline = useNetworkState()
 
     return (
-        <>
+        <div className={classNames({
+            'main-container': true,
+            'offline': !isOnline
+        })}>
             <div id="counter">{counterValue}</div>
             <div id="local-delta">{formatDelta(localDelta)}</div>
 
@@ -29,7 +33,7 @@ export const App = () => {
             </div>
 
             <GithubIcon url={'https://github.com/michal-bures/pwa'}/>
-        </>
+        </div>
     )
 }
 

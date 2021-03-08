@@ -1,12 +1,9 @@
-html {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-body {
+.main-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, 'RobotoRegular', 'Droid Sans',  'Segoe UI', Segoe, Tahoma, Geneva, sans-serif;
     font-weight: 200;
     font-size: 20px;
