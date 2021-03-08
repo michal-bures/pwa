@@ -1,6 +1,6 @@
-console.log('Script loaded!')
+console.log('running sw.js')
 
-const VERSION = 15
+const VERSION = 16
 const CACHE_STORAGE_KEY = `counter-pwa-v${VERSION}`
 
 // list of resources that will be cached client-side and served from the cache instead of server
@@ -10,14 +10,14 @@ const cacheFirstList = [
     "style.css",
 ]
 
-self.addEventListener('install', function(e) {
+self.addEventListener('install', function(event) {
     console.log('install event')
-    e.waitUntil(install())
+    event.waitUntil(install())
 })
 
-self.addEventListener('activate', function(e) {
+self.addEventListener('activate', function(event) {
     console.log('activate event')
-    e.waitUntil(activate())
+    event.waitUntil(activate())
 })
 
 self.addEventListener('message', (event) => {
@@ -26,8 +26,8 @@ self.addEventListener('message', (event) => {
     }
 })
 
-self.addEventListener('fetch', function(e) {
-    e.respondWith(cacheFirst(e.request))
+self.addEventListener('fetch', function(event) {
+    event.respondWith(cacheFirst(event.request))
 })
 
 async function cacheFirst(request) {

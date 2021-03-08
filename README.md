@@ -26,6 +26,10 @@ Here are some interesting behaviors to explore with the `/minimal` example app.
 
 For some of these you need to runt the app locally - just run `npx serve .` in the serve the `/minimal` directory, or use your favourite web server.
 
+### How does PWA work on your platform?
+
+open [counter-pwa.netlify.app](https://counter-pwa.netlify.app) on any device you have handy - how does it behave? Are you able to install it?
+
 ### Inspect the app in chrome dev tools
 
 * Inspect live how the app works with local storage and cache (Application tab)
@@ -42,6 +46,12 @@ For some of these you need to runt the app locally - just run `npx serve .` in t
     * new service worker is loaded and the version number in the bottom right changes
     * but the background color still remains unchanged because the style.css was already loaded from cache by the old service worker
 * reload the app once more, now the background change will finally take effect, as the new service worker no longer uses the old cached version
+
+### The even trickier things about updating
+
+* open the page in two tabs, and check how the update process works now; experiment with
+  * commenting out `self.skipWaiting()` in the service worker
+  * commenting out `await self.clients.claim()` in the service worker
 
 ### How to make the counter even more robust 
 
