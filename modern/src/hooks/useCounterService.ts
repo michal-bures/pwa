@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useNumberInLocalStorage} from '../useLocalStorage';
 import {useCounterAPI} from '../api/useCounterAPI';
-import {useNetworkState} from './useConnectionState';
+import {useNetworkState} from './useNetworkState';
 
 export function useCounterService() {
     const [inFlightDelta, setInFlightDelta] = useState(0)

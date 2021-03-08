@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {GithubIcon} from './GithubIcon';
 import {useServiceWorkerVersion} from './hooks/useServiceWorkerVersion';
-import {useNetworkStatus} from './hooks/useNetworkStatus';
 import {useCounterService} from './hooks/useCounterService';
-
+import {useNetworkState} from './hooks/useNetworkState';
 
 export const App = () => {
 
@@ -14,7 +13,7 @@ export const App = () => {
         refreshCountFromServer
     } = useCounterService()
     const swVersion = useServiceWorkerVersion()
-    const networkStatus = useNetworkStatus()
+    const isOnline = useNetworkState()
 
     return (
         <>
@@ -26,7 +25,7 @@ export const App = () => {
             <div className="bubble-button" id="refresh-button" onClick={refreshCountFromServer}>&#8635;</div>
             <div className="status-text">
                 <div id="version">{swVersion}</div>
-                <div id="network-status">{networkStatus}</div>
+                <div id="network-status">{isOnline ? 'online' : 'offline'}</div>
             </div>
 
             <GithubIcon url={'https://github.com/michal-bures/pwa'}/>
