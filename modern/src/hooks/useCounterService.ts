@@ -37,7 +37,6 @@ export function useCounterService() {
     }
 
     useEffect(() => {
-        console.log('DELTA local', localDelta, 'in flight', inFlightDelta)
         if (!inFlightDelta && !syncingSuspended) syncDeltaToServer(localDelta)
     }, [localDelta, inFlightDelta])
 
@@ -50,6 +49,7 @@ export function useCounterService() {
     }, [isOnline])
 
     const refreshCountFromServer = async () => {
+        if (inFlightDelta) return
         const val = await counterAPI.fetchCounterValue()
         setCounterValue(val)
     }

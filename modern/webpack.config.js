@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = {
   resolve: {
@@ -38,7 +39,10 @@ module.exports = {
       patterns: [
         { from: 'static' }
       ]
-    })
+    }),
+    new WorkboxPlugin.InjectManifest({
+      swSrc: './src/sw.js'
+    }),
   ],
   devServer: {
     contentBase: path.join(__dirname, 'static'),

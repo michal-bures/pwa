@@ -21,92 +21,14 @@
 
 <!-- Scripts -->
 <script defer type="text/javascript">
-    const urls = {
-        fetchCounterValue: 'https://api.countapi.xyz/get/pwa-demo/counter',
-        updateCounter: delta => `https://api.countapi.xyz/update/pwa-demo/counter?amount=${delta}`
-    }
-    const storageKeys = {
-        counterValue: 'counter-value',
-        localDelta: 'local-delta'
-    }
-    const elements = {
-        networkStatus: document.querySelector('#network-status'),
-        counter: document.querySelector('#counter'),
-        version: document.querySelector('#version'),
-        plusButton: document.querySelector('#plus-button'),
-        minusButton: document.querySelector('#minus-button'),
-        refreshButton: document.querySelector('#refresh-button'),
-        localDelta: document.querySelector('#local-delta')
-    }
-    let serviceWorkerVersion = '?'
-    let inflightDelta = 0 // counter adjustment currently on the way to the server
-
-    elements.plusButton.onclick = () => adjustCount(1)
-    elements.minusButton.onclick = () => adjustCount(-1)
-    elements.refreshButton.onclick = fetchCount
-
-    if (navigator.serviceWorker) initServiceWorker()
-    renderCurrentCount()
-    fetchCount()
-    updateVersion()
-    handleConnectivityChange()
-    window.addEventListener('online',  handleConnectivityChange);
-    window.addEventListener('offline', handleConnectivityChange);
-
-    // check for update from server once in a while
-    setInterval(() => {if (!inflightDelta) fetchCount()}, 10000)
-
-    function initServiceWorker() {
-        // register the worker
-        navigator.serviceWorker.register('sw.js')
-
-        // display current service worker version
-        navigator.serviceWorker.addEventListener('message', event => {
-            if (event.data.serviceWorkerVersion) {
-                serviceWorkerVersion = event.data.serviceWorkerVersion
-                updateVersion()
-            }
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                console.log('SW registered: ', registration);
+            }).catch(registrationError => {
+                console.error('SW registration failed: ', registrationError);
+            });
         });
-        navigator.serviceWorker.ready.then(registration => {
-            registration.active.postMessage('version')
-        })
-    }
-
-    function handleConnectivityChange() {
-        console.log('Connectivity change:', navigator.onLine ? 'online' : 'offline')
-        if (navigator.onLine) {
-            document.body.classList = ['online']
-            elements.networkStatus.innerText = 'online'
-            if (getLocalDelta()) adjustCount()
-        } else {
-            document.body.classList = ['offline']
-            elements.networkStatus.innerText = 'offline'
-        }
-    }
-
-
-    function renderCurrentCount() {
-        const delta = getLocalDelta()
-        elements.localDelta.innerHTML = delta ? `(${withSign(delta)})` : ''
-        elements.counter.innerHTML = getCounterValue()
-    }
-
-    function updateVersion() {
-        elements.version.innerText = `v${serviceWorkerVersion}`
-    }
-
-    function getLocalDelta() {
-        const storedDelta = Number(localStorage?.getItem(storageKeys.localDelta))
-        return isNaN(storedDelta) ? 0 : storedDelta
-    }
-
-    function getCounterValue() {
-        const storedValue = Number(localStorage?.getItem(storageKeys.counterValue))
-        return isNaN(storedValue) ? 0 : storedValue
-    }
-
-    function withSign(n) {
-        return (n<0?"":"+") + n
     }
 </script>
 </body>

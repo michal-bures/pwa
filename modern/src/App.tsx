@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {GithubIcon} from './GithubIcon';
 import {useServiceWorkerVersion} from './hooks/useServiceWorkerVersion';
 import {useCounterService} from './hooks/useCounterService';
@@ -15,6 +15,12 @@ export const App = () => {
     } = useCounterService()
     const swVersion = useServiceWorkerVersion()
     const isOnline = useNetworkState()
+
+    useEffect(() => {
+        // check for update from server once in a while
+        const intervalId = setInterval(() => {refreshCountFromServer()}, 10000)
+        return () => clearInterval(intervalId )
+    }, [])
 
     return (
         <div className={classNames({
