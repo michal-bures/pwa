@@ -16,6 +16,9 @@ There are two versions of the app in this repository:
      * not ideal for production environment (only compatible with modern evergreen browsers, no minification).
 
  * *Modern version* in `/modern` is an implementation, that takes full advantage of existing tools and libraries.
+    * Webpack helps us produce a production-ready bundle
+    * Workbox and it's webpack plugin automates precaching of all resources in the service worker (no need for manual versioning anymore)
+    * React and Typescript help make the codebase maintainable and extensible   
 
 ## Exercises
 

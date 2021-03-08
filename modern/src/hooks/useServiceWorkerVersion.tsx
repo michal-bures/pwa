@@ -13,7 +13,6 @@ export function useServiceWorkerVersion() {
             }
         });
         navigator.serviceWorker.ready.then(registration => {
-            console.log('SENDING VERSION REQUEST')
             registration.active!.postMessage('version')
         })
     }, [])
